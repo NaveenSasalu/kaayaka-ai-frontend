@@ -19,17 +19,15 @@ export default function Home() {
     const userMessage: Message = { role: "user", text: message };
     setMessages((prev) => [...prev, userMessage]);
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/chat-stream`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: "demo-user",
-          message,
-        }),
-      }
-    );
+    const response = await fetch("http://localhost:8000/chat-stream", {
+      // const response = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/chat-stream`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: "demo-user",
+        message,
+      }),
+    });
 
     if (!response.body) {
       setLoading(false);
