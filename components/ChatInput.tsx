@@ -20,7 +20,7 @@ export default function ChatInput({
     <form onSubmit={handleSubmit} className="flex gap-2 p-4 border-t">
       <input
         className="flex-1 border px-12 py-3 rounded-xl focus:outline-none"
-        placeholder="Type your message…"
+        placeholder="Please type your message…"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
