@@ -9,18 +9,23 @@ RUN npm install
 # Copy app source
 COPY . .
 
-# Copy prod environment file
-COPY .env.production .env.production
+# Build arg fallback for NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_API_URL
+# If .env.production exists, Next will load it during build automatically.
+# If not, we export NEXT_PUBLIC_API_URL env var so Next uses it during build.
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
-# Build Next.js
-RUN NEXT_PUBLIC_API_URL=$(grep NEXT_PUBLIC_API_URL .env.production | cut -d '=' -f2) npm run build
+RUN npm run build
 
-# STEP 2 — Run
+# runner
 FROM node:20-alpine AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
-COPY --from=builder /app ./
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 CMD ["npm", "start"]
